@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+/* Force table to not be like tables anymore */
+#no-more-tables table,
+#no-more-tables thead,
+#no-more-tables tbody,
+#no-more-tables th,
+#no-more-tables td,
+#no-more-tables tr {
+display: block;
+}
+
+/* Hide table headers (but not display: none;, for accessibility) */
+#no-more-tables thead tr {
+position: absolute;
+top: -9999px;
+left: -9999px;
+}
+
+#no-more-tables tr { border: 1px solid #ccc; }
+
+#no-more-tables td {
+/* Behave  like a "row" */
+border: none;
+border-bottom: 1px solid #eee;
+position: relative;
+padding-left: 50%;
+white-space: normal;
+text-align:left;
+}
+
+#no-more-tables td:before {
+/* Now like a table header */
+position: absolute;
+/* Top/left values mimic padding */
+top: 6px;
+left: 6px;
+width: 45%;
+padding-right: 10px;
+white-space: nowrap;
+text-align:left;
+font-weight: bold;
+}
+
+/*
+Label the data
+*/
+#no-more-tables td:before { content: attr(data-title); }
+</style>
+
+<div class="container-fluid">
+  <h1> Search </h1>
+  <div class="row">
+    <div class="col-md-2">
+      Find a class
+    </div>
+    <div class="col-md-4">
+      <form action="classes" method="GET">
+        <div class="form-group">
+          Class Name:
+          <input name = "clss" type="text" class="form-control" id="class">
+          <button type="submit" class="btn btn-default">Query</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style/classes.css') }}"
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">
+                {{packet.name}} <br>{{packet.professor}}
+            </h1>
+            <h3 class="text-center">
+                {{packet.time}}
+            </h3>
+        </div>
+        <div id="Assingments">
+          <h1>Assignments</h1>
+            <table class="col-md-12 table-bordered table-striped table-condensed cf">
+        		<thead class="cf">
+        			<tr>
+        				<th>Name</th>
+        				<th>Due</th>
+        				<th>Points</th>
+        				<th>Topics</th>
+        				<th>Flags</th>
+        				<th>Flag</th>
+        			</tr>
+        		</thead>
+          <tbody>
+            {{packet.assignments.test.topics}} </br>
+            {%for assignment in packet.assignments%}
+
+            <tr>
+        				<td data-title="Name">{{assignment}}</td>
+        				<td data-title="Due">{{packet.assignments[assignment]["due"]}}</td>
+        				<td data-title="Points">{{packet.assignments[assignment]["points"]}}</td>
+        				<td data-title="Topics">{%for i in packet.assignments[assignment]["topics"]%}
+                                          {{i}}
+                                        {%endfor%}</td>
+        				<td data-title="Flags %">{%for flag in packet.assignments[assignment]["flags"]%}
+                                            #
+                                          {%endfor%}</td>
+        				<td data-title="Flag">
+                  <form action ="flag" method="GET">
+                    <button type="submit" class="btn btn-default">FLAG</button>
+                    <input name = "code",type="text" hidden="true" value="{{clss}}">
+                    <input name = "flag" type="text" hidden="true" value="complaint">
+                    <input name = "name" type = "text" hidden = "true" value = "{{assignment}}">
+                  </form>
+
+                </td>
+        			</tr>
+            {%endfor%}
+          </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+{%endblock%}

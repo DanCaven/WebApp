@@ -1,0 +1,22 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<body>
+
+<div class="container-fluid">
+  <h1>Hello {{user}}</h1>
+  <h2> Your Classes </h2>
+  <div class="row">
+    {%for i in classes%}
+      <div class="col-md-4">
+				<a href = "http://localhost:8080/classes?clss={{i}}"> {{i}} </a>
+			</div>
+    {%endfor%}
+  </div>
+</div>
+
+</body>
+</html>
+
+{%endblock%}
