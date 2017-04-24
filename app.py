@@ -1,6 +1,6 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, jsonify
 import requests
-
+import os
 
 data = {"dan":{"pass":"asdf","classes":["CMSCI 123", "CMSCI 425"]},"hannah":{"pass":"love","classes":["Genetics", "Bio"]}}
 
