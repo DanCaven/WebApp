@@ -15,7 +15,7 @@ def login():
     if "log" in request.args:
         info = (request.form)
         user = info['user']
-        url = "http://localhost:5000/login"
+        url = "https://globalagendaapi.herokuapp.com/login"
         querystring = {"user":"dan","pass":"asdf"}
         response = requests.request("GET", url, params=querystring)
         r = jsonify(response.text)
@@ -32,7 +32,7 @@ def profile():
 @app.route("/classes")
 def classes():
     clss = request.args.get("clss")
-    url = "http://localhost:5000/api/Agenda/get/class"
+    url = "https://globalagendaapi.herokuapp.com/api/Agenda/get/class"
     querystring = {"name":str(clss)}
     print(querystring)
     packet = requests.get(url, params=querystring)
@@ -58,7 +58,7 @@ def upload():
         prof = info.get("prof")
         name = info.get("name")
         time = info.get("time")
-        url = "http://localhost:5000/api/Agenda/upload/class"
+        url = "https://globalagendaapi.herokuapp.com/api/Agenda/upload/class"
         querystring = {"code":code,"prof":prof,"time":time,"name":name}
         response = requests.request("GET", url, params=querystring)
         print(response)
@@ -70,7 +70,7 @@ def upload():
         due = info.get("due")
         points = info.get("points")
         topics = info.get("topics")
-        url = "http://localhost:5000/api/Agenda/upload/assignments"
+        url = "https://globalagendaapi.herokuapp.com/api/Agenda/upload/assignments"
         querystring = {"code":code,"due":due,"points":points,"name":name,"topics":topics}
         response = requests.request("GET", url, params=querystring)
         return render_template("upload.html")
@@ -81,7 +81,7 @@ def upload():
 def asignment():
     clss = request.args.get("clss")
     asignment = request.args.get("assignment")
-    url = "http://localhost:5000/api/Agenda/get/assignment"
+    url = "https://globalagendaapi.herokuapp.com/api/Agenda/get/assignment"
     querystring = {"code":clss,"name":assingment}
     packet = requests.request("GET", url, params=querystring).json()
     #packet = packet.json()
@@ -94,7 +94,7 @@ def flag():
     code = info.get("code")
     flag = info.get("flag")
     name = info.get("name")
-    url = "http://localhost:5000/api/Agenda/flag"
+    url = "https://globalagendaapi.herokuapp.com/api/Agenda/flag"
     querystring = {"code":code,"flag":flag,"name":name}
     response = requests.request("GET", url,params=querystring)
     return redirect(url_for('classes', clss = code))
