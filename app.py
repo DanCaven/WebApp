@@ -1,6 +1,7 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, jsonify
 import requests
 import os
+import json
 
 data = {"dan":{"pass":"asdf","classes":["CMSCI 123", "CMSCI 425"]},"hannah":{"pass":"love","classes":["Genetics", "Bio"]}}
 
@@ -16,19 +17,18 @@ def login():
         info = (request.form)
         user = info['user']
         url = "https://globalagendaapi.herokuapp.com/login"
-        querystring = {"user":"dan","pass":"asdf"}
-        response = requests.request("GET", url, params=querystring)
-        print(response.json)
-        if "user" in response.json:
-            session["user"] = response.json
-            return redirect(url_for('profile', username = user))
+        querystring = {"user":info["user"],"pass":info["pass"]}
+        response = requests.request("GET", url, params=querystring).text
+        response = json.loads(response)
+        if response["user"] == info["user"]:
+            session["user"] = response
+            return redirect(url_for('profile', username = response["user"]))
     return render_template("login.html")
 
 @app.route("/profile")
 def profile():
     user = session['user']
-    return user
-    return render_template("profile.html", user=user, classes=data[user]['classes'])
+    return render_template("profile.html", user=user["user"], classes=user['classes'])
 
 @app.route("/classes")
 def classes():
