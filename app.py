@@ -18,9 +18,9 @@ def login():
         url = "https://globalagendaapi.herokuapp.com/login"
         querystring = {"user":"dan","pass":"asdf"}
         response = requests.request("GET", url, params=querystring)
-        r = jsonify(response.text)
-        if "verified" in response.text:
-            session["user"] = r
+        print(response.json)
+        if "user" in response.json:
+            session["user"] = response.json
             return redirect(url_for('profile', username = user))
     return render_template("login.html")
 
