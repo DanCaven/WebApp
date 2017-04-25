@@ -77,6 +77,18 @@ Label the data
             <h3 class="text-center">
                 {{packet.time}}
             </h3>
+            <h4 class="text-center">
+              {%if packet.code not in classes%}
+              Add class to your classes
+              <form action="/classes" method="GET">
+                <input name="code" value="{{packet.code}}" hidden="True">
+                <input name="user" value=session["user"] hidden="True">
+                <input name="add" value="null" hidden="true">
+                <input name="clss" value="{{packet.code}}" hidden="True">
+                <input type="submit">
+              </form>
+              {%endif%}
+
         </div>
         <div id="Assingments">
           <h1>Assignments</h1>

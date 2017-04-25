@@ -6,6 +6,12 @@ import json
 data = {"dan":{"pass":"asdf","classes":["CMSCI 123", "CMSCI 425"]},"hannah":{"pass":"love","classes":["Genetics", "Bio"]}}
 
 app = Flask(__name__)
+def updateInfo(user):
+    url = "https://globalagendaapi.herokuapp.com/api/getuser"
+    querystring = {"user":user}
+    response = requests.request("GET", url, params=querystring).text
+    response = json.loads(response)
+    session["user"] = response
 
 @app.route("/test")
 def test():
@@ -16,40 +22,50 @@ def login():
     if "log" in request.args:
         info = (request.form)
         user = info['user']
-        url = "https://globalagendaapi.herokuapp.com/login"
+        url = "https://globalagendaapi.herokuapp.com/api/login"
         querystring = {"user":info["user"],"pass":info["pass"]}
+        #print(querystring)
         response = requests.request("GET", url, params=querystring).text
         response = json.loads(response)
         if response["user"] == info["user"]:
+            #print("in authenticated")
             session["user"] = response
             return redirect(url_for('profile', username = response["user"]))
     return render_template("login.html")
 
 @app.route("/profile")
 def profile():
-    user = session['user']
-    return render_template("profile.html", user=user["user"], classes=user['classes'])
+    info = (request.args)
+    user = info.get('username')
+    updateInfo(user)
+    return render_template("profile.html", user=session["user"]["user"], classes=session['user']["classes"])
 
-@app.route("/classes")
+@app.route("/classes", methods=["GET","POST"])
 def classes():
+    #print(request.args)
+    if "code" in request.args:
+        url = "https://globalagendaapi.herokuapp.com/api/AddClass"
+        user = (session["user"]["user"])
+        querystring = {"user":user,"code":request.args.get("code").lower()}
+        response = requests.request("GET", url, params=querystring).text
+        updateInfo(user)
     clss = request.args.get("clss")
     url = "https://globalagendaapi.herokuapp.com/api/Agenda/get/class"
     querystring = {"name":str(clss)}
-    print(querystring)
     packet = requests.get(url, params=querystring)
     packet = packet.json()
     if packet != "empty set":
-        print(packet)
+        #print(packet)
         packet = dict(packet)
-        print(packet)
-        return render_template("classes.html",clss=clss, packet=packet)
-    return render_template("search.html", flag =True)
+        #print(packet)
+        return render_template("classes.html",clss=clss, packet=packet,classes=session['user']["classes"], user = session["user"]["user"])
+    return render_template("search.html", flag =True,user = session["user"]["user"])
 
 
 
 @app.route("/search")
 def search():
-    return render_template("search.html",flag=False)
+    return render_template("search.html",flag=False,user=session["user"]["user"])
 
 @app.route("/upload")
 def upload():
@@ -62,8 +78,8 @@ def upload():
         url = "https://globalagendaapi.herokuapp.com/api/Agenda/upload/class"
         querystring = {"code":code,"prof":prof,"time":time,"name":name}
         response = requests.request("GET", url, params=querystring)
-        print(response)
-        return render_template("upload.html")
+        #print(response)
+        return render_template("upload.html",user=session["user"]["user"])
     elif "due"  in request.args:
         info = request.args
         code = info.get("code")
@@ -74,9 +90,9 @@ def upload():
         url = "https://globalagendaapi.herokuapp.com/api/Agenda/upload/assignments"
         querystring = {"code":code,"due":due,"points":points,"name":name,"topics":topics}
         response = requests.request("GET", url, params=querystring)
-        return render_template("upload.html")
+        return render_template("upload.html",user=session["user"]["user"])
     else:
-        return render_template("upload.html")
+        return render_template("upload.html",user=session["user"]["user"])
 
 @app.route("/assignment")
 def asignment():
@@ -86,7 +102,7 @@ def asignment():
     querystring = {"code":clss,"name":assingment}
     packet = requests.request("GET", url, params=querystring).json()
     #packet = packet.json()
-    #print(packet)
+    ##print(packet)
     return packet
 
 @app.route("/flag")
