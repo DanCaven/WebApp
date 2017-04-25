@@ -20,13 +20,14 @@ def login():
         response = requests.request("GET", url, params=querystring)
         r = jsonify(response.text)
         if "verified" in response.text:
-            session["user"] = user
+            session["user"] = r
             return redirect(url_for('profile', username = user))
     return render_template("login.html")
 
 @app.route("/profile")
 def profile():
     user = session['user']
+    return user
     return render_template("profile.html", user=user, classes=data[user]['classes'])
 
 @app.route("/classes")
