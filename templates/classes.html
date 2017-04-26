@@ -79,13 +79,12 @@ Label the data
             </h3>
             <h4 class="text-center">
               {%if packet.code not in classes%}
-              Add class to your classes
               <form action="/classes" method="GET">
                 <input name="code" value="{{packet.code}}" hidden="True">
                 <input name="user" value=session["user"] hidden="True">
                 <input name="add" value="null" hidden="true">
                 <input name="clss" value="{{packet.code}}" hidden="True">
-                <input type="submit">
+                <button type="submit" class="btn btn-primary">Add To Your Classes</button>
               </form>
               {%endif%}
 
@@ -106,7 +105,6 @@ Label the data
           <tbody>
            </br>
             {%for assignment in packet.assignments%}
-
             <tr>
         				<td data-title="Name">{{assignment}}</td>
         				<td data-title="Due">{{packet.assignments[assignment]["due"]}}</td>
@@ -115,7 +113,7 @@ Label the data
                                           {{i}}
                                         {%endfor%}</td>
         				<td data-title="Flags %">{%for flag in packet.assignments[assignment]["flags"]%}
-                                            #
+                                            <div>!</div>
                                           {%endfor%}</td>
         				<td data-title="Flag">
                   <form action ="flag" method="GET">
