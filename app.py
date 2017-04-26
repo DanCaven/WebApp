@@ -13,9 +13,35 @@ def updateInfo(user):
     response = json.loads(response)
     session["user"] = response
 
+def TestAuth():
+    return("auth" not in session)# or session["auth"] != True:
+
+
 @app.route("/test")
 def test():
     return "hello world"
+
+@app.route("/Register",methods=["POST","GET"])
+def Register():
+    if request.method == "GET":
+        return render_template("register.html")
+    else:
+        info = request.form
+        print(info)
+        username = info["username"]
+        word = info["word"]
+        test = info["test"]
+        if word != test:
+            return render_template("register.html",flag="passwords don't match")
+        url = "https://globalagendaapi.herokuapp.com/api/NewUser"
+        querystring = {"user":username,"word":word}
+        response = requests.request("GET", url, params=querystring).text
+        if "present" in response:
+            return render_template("register.html",flag=response)
+        else:
+            session["auth"] == True
+            return redirect(url_for('profile', username = response["user"]))
+
 
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -30,11 +56,14 @@ def login():
         if response["user"] == info["user"]:
             #print("in authenticated")
             session["user"] = response
+            session["auth"] = True
             return redirect(url_for('profile', username = response["user"]))
     return render_template("login.html")
 
 @app.route("/profile")
 def profile():
+    if TestAuth():
+        return "locked"
     info = (request.args)
     user = info.get('username')
     updateInfo(user)
@@ -42,6 +71,8 @@ def profile():
 
 @app.route("/classes", methods=["GET","POST"])
 def classes():
+    if TestAuth():
+        return "locked"
     #print(request.args)
     if "code" in request.args:
         url = "https://globalagendaapi.herokuapp.com/api/AddClass"
@@ -65,10 +96,14 @@ def classes():
 
 @app.route("/search")
 def search():
+    if TestAuth():
+        return "locked"
     return render_template("search.html",flag=False,user=session["user"]["user"])
 
 @app.route("/upload")
 def upload():
+    if TestAuth():
+        return "locked"
     if "prof" in request.args:
         info = request.args
         code = info.get("code")
@@ -96,6 +131,8 @@ def upload():
 
 @app.route("/assignment")
 def asignment():
+    if TestAuth():
+        return "locked"
     clss = request.args.get("clss")
     asignment = request.args.get("assignment")
     url = "https://globalagendaapi.herokuapp.com/api/Agenda/get/assignment"
@@ -107,6 +144,8 @@ def asignment():
 
 @app.route("/flag")
 def flag():
+    if TestAuth():
+        return "locked"
     info = request.args
     code = info.get("code")
     flag = info.get("flag")

@@ -3,15 +3,13 @@
     	  <div class="modal-dialog">
 				<div class="loginmodal-container">
 					<h1>Login to Your Account</h1><br>
-				  <form action="/login?log" method="POST">
-					<input type="text" name="user" placeholder="Username">
-					<input type="password" name="pass" placeholder="Password">
+				  <form action="/Register" method="POST">
+					<input type="text" name="username" placeholder="Username">
+					<input type="password" name="word" placeholder="Password">
+          <input type="password" name="test" placeholder="Password">
 					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
 				  </form>
-
-				  <div class="login-help">
-					<a href="/Register">Register</a> - <a href="#">Forgot Password</a>
-				  </div>
+          {{flag}}
 				</div>
 			</div>
 		  </div>
