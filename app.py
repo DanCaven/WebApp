@@ -36,7 +36,7 @@ def Register():
         url = "https://globalagendaapi.herokuapp.com/api/NewUser"
         querystring = {"user":username,"word":word}
         response = requests.request("GET", url, params=querystring).text
-        if "present" in response:
+        if response == "username already present":
             return render_template("register.html",flag=response)
         else:
             session["auth"] == True
