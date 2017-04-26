@@ -39,8 +39,8 @@ def Register():
         if response == "username already present":
             return render_template("register.html",flag=response)
         else:
-            session["auth"] == True
-            return redirect(url_for('profile', username = response["user"]))
+            session["auth"] = True
+            return redirect(url_for('profile', username = username))
 
 
 @app.route("/login", methods=["GET","POST"])
